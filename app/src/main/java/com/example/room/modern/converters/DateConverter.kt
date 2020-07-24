@@ -1,4 +1,4 @@
-package com.example.room.modern.converter
+package com.example.room.modern.converters
 
 import androidx.room.TypeConverter
 import java.util.*

@@ -1,5 +1,6 @@
 package com.example.room.legacy.daos
 
+import android.database.Cursor
 import android.database.sqlite.SQLiteOpenHelper
 import com.example.room.legacy.entities.StudentEntity
 import java.util.*
@@ -7,7 +8,7 @@ import kotlin.collections.ArrayList
 
 class StudentDaoImpl(private val sqlLiteDb: SQLiteOpenHelper) : StudentDao {
 
-    override fun addNewStudent(entity: StudentEntity) : Boolean {
+    override fun addStudent(entity: StudentEntity) : Boolean {
         val db = sqlLiteDb.writableDatabase
         val result = db.insert(StudentEntity.TABLE_NAME, null, entity.asContentValues())
         db.close()
@@ -50,4 +51,30 @@ class StudentDaoImpl(private val sqlLiteDb: SQLiteOpenHelper) : StudentDao {
         return studentList
     }
 
+    override fun getStudent(studentId: Int): StudentEntity? {
+        val db = sqlLiteDb.readableDatabase
+
+        val cursor: Cursor = db.query(
+            StudentEntity.TABLE_NAME,
+            arrayOf(StudentEntity.KEY_ID, StudentEntity.KEY_NAME, StudentEntity.KEY_BIRTHDAY),
+            StudentEntity.KEY_ID.toString() + "=?",
+            arrayOf(studentId.toString()),
+            null,
+            null,
+            null,
+            null
+        )
+
+        if (cursor.moveToFirst()) {
+            val id = cursor.getInt(cursor.getColumnIndex(StudentEntity.KEY_ID))
+            val name = cursor.getString(cursor.getColumnIndex(StudentEntity.KEY_NAME))
+            val birthDayTimeStamp = cursor.getLong(cursor.getColumnIndex(StudentEntity.KEY_BIRTHDAY))
+            val birthDay = Calendar.getInstance().apply { timeInMillis = birthDayTimeStamp }.time
+            return StudentEntity(id, name, birthDay)
+        }
+
+        cursor.close()
+        db.close()
+        return null
+    }
 }

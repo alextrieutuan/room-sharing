@@ -21,7 +21,7 @@ class LegacyDatabase private constructor(context: Context) : SQLiteOpenHelper(co
         MigrationFactory.getMigrationByVersion(oldVersion, newVersion)?.migrate(db)
     }
 
-    override fun provideStudentDao(): StudentDao {
+    override fun studentDao(): StudentDao {
         if (studentDao == null) {
             studentDao = StudentDaoImpl(this)
         }
@@ -34,7 +34,7 @@ class LegacyDatabase private constructor(context: Context) : SQLiteOpenHelper(co
 
         private var databaseInstance : LegacyDatabase? = null
 
-        fun getDatabase(context: Context): LegacyDatabase {
+        fun getInstance(context: Context): LegacyDatabase {
             synchronized(this) {
                 if (databaseInstance == null) {
                     databaseInstance = LegacyDatabase(context)

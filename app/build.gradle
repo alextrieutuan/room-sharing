@@ -41,4 +41,14 @@ dependencies {
     kapt "androidx.room:room-compiler:2.2.5"
     implementation "androidx.room:room-runtime:2.2.5"
     implementation "androidx.room:room-rxjava2:2.2.5"
+
+    // Provide Test Android Implementation
+    testImplementation ('org.robolectric:robolectric:4.3.1') {
+        // excluding as gradle complains that this dependency needs to be added as an annotationProcessor
+        // since we're not building an android auto app, this is safe to exclude
+        exclude group: 'com.google.auto.service', module: 'auto-service'
+    }
+
+    // Provides classes deprecated in roboelectric
+    testImplementation 'androidx.test:core:1.2.0'
 }
